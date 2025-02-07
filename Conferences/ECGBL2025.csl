@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="sort-only" default-locale="en-GB">
   <info>
-    <title>Cite Them Right 12th edition - Harvard</title>
-    <id>http://www.zotero.org/styles/harvard-cite-them-right</id>
+    <title>ECGBL 2025 (Based on Cite Them Right - 12th Edition Harvard by Patrick O'Brien)</title>
+    <id>lyesoussaiden/ecgbl/2025</id>
     <link href="http://www.zotero.org/styles/harvard-cite-them-right" rel="self"/>
-    <link href="http://www.zotero.org/styles/harvard-cite-them-right-11th-edition" rel="template"/>
+    <link href="http://www.zotero.org/styles/harvard-cite-them-right-12th-edition" rel="template"/>
     <link href="http://www.citethemrightonline.com/" rel="documentation"/>
     <author>
-      <name>Patrick O'Brien</name>
+      <name>Lyes Oussaiden</name>
     </author>
     <category citation-format="author-date"/>
     <category field="generic-base"/>
-    <summary>Harvard according to Cite Them Right, 11th edition.</summary>
-    <updated>2022-06-29T02:44:10+00:00</updated>
+    <summary>Harvard according to Cite Them Right, 12th edition, edited to conform to requirements for ECGBL 2025.</summary>
+    <updated>2025-02-07T16:21:00+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en-GB">
     <terms>
-      <term name="editor" form="short">
-        <single>ed.</single>
-        <multiple>eds</multiple>
-      </term>
+      <term name="editor">Edited by </term>
+      <term name="translator">Translated by </term>
       <term name="editortranslator" form="verb">edited and translated by</term>
       <term name="edition" form="short">edn.</term>
+      <term name="et-al">et al</term>
+      <term name="in">In</term>
+      <term name="issue">No</term>
+      <term name="number">No</term>
+      <term name="page" form="short">
+        <single>p</single>
+        <multiple>pp</multiple>
+      </term>
+      <term name="volume">Vol</term>
+      <term name="online">online</term>
     </terms>
   </locale>
   <macro name="editor">
@@ -33,10 +41,16 @@
         </names>
         <choose>
           <if variable="container-author" match="none">
-            <names variable="editor translator" delimiter=", ">
-              <name and="text" initialize-with="."/>
-              <label form="short" prefix=" (" suffix=")"/>
-            </names>
+            <group delimiter=", ">
+              <names variable="editor" delimiter=", ">
+                <label/>
+                <name and="text" initialize-with="."/>
+              </names>
+              <names variable="translator" delimiter=", ">
+                <label/>
+                <name and="text" initialize-with="."/>
+              </names>
+            </group>
           </if>
         </choose>
       </if>
@@ -62,7 +76,7 @@
     <names variable="author">
       <name and="text" delimiter-precedes-last="never" initialize-with="." name-as-sort-order="all"/>
       <label form="short" prefix=" (" suffix=")"/>
-      <et-al font-style="italic"/>
+      <et-al/>
       <substitute>
         <names variable="editor"/>
         <names variable="translator"/>
@@ -80,7 +94,7 @@
   <macro name="author-short">
     <names variable="author">
       <name form="short" and="text" delimiter=", " delimiter-precedes-last="never" initialize-with=". "/>
-      <et-al font-style="italic"/>
+      <et-al/>
       <substitute>
         <names variable="editor"/>
         <names variable="translator"/>
@@ -127,22 +141,31 @@
       </if>
     </choose>
   </macro>
+  <macro name="medium">
+    <choose>
+      <if variable="medium">
+        <text variable="medium" prefix="[" suffix="]"/>
+      </if>
+      <else-if variable="DOI URL" match="any">
+        <text value="[online]"/>
+      </else-if>
+    </choose>
+  </macro>
   <macro name="title">
     <choose>
       <if type="bill book legal_case legislation motion_picture report song thesis webpage graphic" match="any">
-        <group delimiter=". ">
-          <group delimiter=" ">
-            <group delimiter=" ">
-              <text variable="title" font-style="italic"/>
-              <text variable="medium" prefix="[" suffix="]"/>
-            </group>
-            <text macro="number-volumes"/>
-          </group>
+        <group delimiter=", ">
+          <text variable="title" font-style="italic"/>
+          <text macro="medium"/>
+          <text macro="number-volumes"/>
           <text macro="edition"/>
         </group>
       </if>
       <else>
-        <text variable="title" form="long" quotes="true"/>
+        <group delimiter=", ">
+          <text variable="title" form="long" prefix='"' suffix='"'/>
+          <text macro="medium"/>
+        </group>
       </else>
     </choose>
   </macro>
@@ -155,29 +178,33 @@
         </group>
       </if>
       <else-if type="report">
-        <group delimiter=". ">
-          <group delimiter=" ">
-            <text variable="genre"/>
-            <text variable="number"/>
+        <group delimiter=", ">
+          <group delimiter=". ">
+            <choose>
+              <if variable="number">
+                <label variable="number"/>
+                <text variable="number"/>
+              </if>
+            </choose>
           </group>
-          <group delimiter=": ">
-            <text variable="publisher-place"/>
-            <text variable="publisher"/>
-          </group>
+          <text variable="publisher"/>
+          <text variable="publisher-place"/>
         </group>
       </else-if>
       <else-if type="article-journal article-newspaper article-magazine" match="none">
-        <group delimiter=" ">
+        <group delimiter=", ">
+          <choose>
+            <if type="speech" variable="event" match="any">
+              <text variable="event"/>
+            </if>
+          </choose>
           <group delimiter=", ">
             <choose>
-              <if type="speech" variable="event" match="any">
-                <text variable="event" font-style="italic"/>
+              <if type="paper-conference" match="none">
+                <text variable="publisher"/>
               </if>
             </choose>
-            <group delimiter=": ">
-              <text variable="publisher-place"/>
-              <text variable="publisher"/>
-            </group>
+            <text variable="publisher-place"/>
           </group>
           <group prefix="(" suffix=")" delimiter=", ">
             <text variable="collection-title"/>
@@ -204,8 +231,16 @@
   <macro name="locator">
     <choose>
       <if type="article-journal">
-        <text variable="volume"/>
-        <text variable="issue" prefix="(" suffix=")"/>
+      <group delimiter=", ">
+        <group delimiter=". ">
+          <label variable="volume"/>
+          <text variable="volume"/>
+        </group>
+        <group delimiter=". ">
+          <label variable="issue"/>
+          <text variable="issue"/>
+        </group>
+      </group>
       </if>
     </choose>
   </macro>
@@ -217,6 +252,11 @@
           <date-part name="month" form="long"/>
         </date>
       </if>
+      <else-if type="article-journal" match="any">
+        <date variable="issued">
+          <date-part name="month" form="long"/>
+        </date>
+      </else-if>
     </choose>
   </macro>
   <macro name="pages">
@@ -265,12 +305,12 @@
   </macro>
   <macro name="container-prefix">
     <choose>
-      <if type="chapter paper-conference" match="any">
+      <if type="paper-conference">
         <text term="in"/>
       </if>
     </choose>
   </macro>
-  <citation et-al-min="4" et-al-use-first="1" disambiguate-add-year-suffix="true" disambiguate-add-names="true" disambiguate-add-givenname="true" collapse="year">
+  <citation et-al-min="4" et-al-use-first="1" disambiguate-add-year-suffix="true" disambiguate-add-names="true" disambiguate-add-givenname="true" collapse="year" after-collapse-delimiter="; ">
     <sort>
       <key macro="year-date"/>
     </sort>
@@ -287,34 +327,41 @@
       </group>
     </layout>
   </citation>
-  <bibliography and="text" et-al-min="4" et-al-use-first="1">
+  <bibliography and="text">
     <sort>
       <key macro="author"/>
       <key macro="year-date"/>
       <key variable="title"/>
     </sort>
+
+    <!--
+    ECGBL has adapted Harvard to form of, largely, comma lists.
+    This aims to form a 'best fit' as the template isn't very clear.
+    -->
     <layout suffix=".">
-      <group delimiter=". ">
+
+      <!--Title intro.-->
+      <group delimiter=", ">
         <group delimiter=" ">
-          <text macro="author"/>
-          <text macro="year-date" prefix="(" suffix=")"/>
-          <group delimiter=", ">
+            <text macro="author"/>
+            <text macro="year-date" prefix="(" suffix=")"/>
             <text macro="title"/>
-            <group delimiter=" ">
-              <text macro="container-prefix"/>
-              <text macro="editor"/>
-              <text macro="container-title"/>
-            </group>
-          </group>
         </group>
-        <text macro="secondary-contributors"/>
+      <text macro="container-title"/>
+      <text macro="editor"/>
+
+      <group delimiter=" ">
+        <text macro="container-prefix"/>
         <text macro="publisher"/>
       </group>
-      <group delimiter=", " prefix=", ">
-        <text macro="locator"/>
-        <text macro="published-date"/>
-        <text macro="pages"/>
+        
+      <text macro="secondary-contributors"/>
+      <text macro="locator"/>
+      <text macro="published-date"/>
+      <text macro="pages"/>
+
       </group>
+      
       <text macro="access" prefix=". "/>
     </layout>
   </bibliography>
